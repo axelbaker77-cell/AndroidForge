@@ -312,19 +312,11 @@ jobs:
           # one (rare — happens for AGP <= 7.x which requires gradle 7.x).
           # Otherwise, trust the image's gradle and let the build use it.
           if [ -n "$GRADLE_VER" ] && [ "$GRADLE_VER" != "8.9" ] && [ "$GRADLE_VER" != "8.0" ]; then
-            # Only download if the requested version is older than 8.9 (e.g. 7.5 for AGP 7.4).
-            # For newer Gradle requirements (8.7, 8.10), the image's 8.9 satisfies them.
-            REQ_MAJOR=$(echo "$GRADLE_VER" | cut -d. -f1)
-            if [ "$REQ_MAJOR" -lt 8 ]; then
-              echo "Project wants older Gradle $GRADLE_VER — downloading..."
-              wget -q "https://services.gradle.org/distributions/gradle-${GRADLE_VER}-bin.zip" -O /tmp/gradle.zip
-              unzip -q /tmp/gradle.zip -d /opt
-              echo "/opt/gradle-${GRADLE_VER}/bin" >> "$GITHUB_PATH"
-            else
-              echo "✓ Image's Gradle 8.9 satisfies the project's requirement of $GRADLE_VER+"
-            fi
+            echo "Project requires Gradle $GRADLE_VER — downloading..."
+            wget -q "https://services.gradle.org/distributions/gradle-${GRADLE_VER}-bin.zip" -O /tmp/gradle.zip
+            unzip -q /tmp/gradle.zip -d /opt
+            echo "/opt/gradle-${GRADLE_VER}/bin" >> "$GITHUB_PATH"
           fi
-
       # ---------------------------------------------------------------------
       # Step 11: Build the project (writes build.json)
       # ---------------------------------------------------------------------
